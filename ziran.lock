@@ -1,0 +1,15 @@
+{
+  "format": 1,
+  "packages": [
+
+  ],
+  "root": {
+    "dependencies": {},
+    "name": "qrcode"
+  },
+  "toolchain": {
+    "commit": "7a4e1df9ca90e5b9e081df37802a09d36ba26334",
+    "ref": "master",
+    "url": "https://github.com/ziranlang/ziran.git"
+  }
+}
