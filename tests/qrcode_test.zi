@@ -1,0 +1,48 @@
+#import "qrcode"
+
+using QrEcc;
+
+qr: QrCode;
+
+ModuleHash :: (code: *QrCode) -> u64 {
+    hash: u64 = cast(u64)14695981039346656037
+    for y: 0..code.size - 1 {
+        for x: 0..code.size - 1 {
+            hash = (hash ^ (ifx QrModule(code, x, y) then cast(u64)1 else cast(u64)0)) * cast(u64)1099511628211
+        }
+    }
+    return hash
+}
+
+// Each case matches Project Nayuki's C library module for module: the same
+// version, error correction boost, codeword layout and mask choice.
+Check :: (text: string, ecc: s32, size: s32, hash: u64) -> bool {
+    if !QrEncodeText(text, cast(QrEcc)ecc, *qr) { return false }
+    return qr.size == size && ModuleHash(*qr) == hash
+}
+
+#program_export
+main :: () -> s32 {
+    link := "inbe-link:1:0123456789abcdef0123456789abcdef:d1e2f3a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f6:https://api.waozi.xyz"
+    if !Check("", 0, 21, cast(u64)6163217156268465275) { return 1 }
+    if !Check("", 3, 21, cast(u64)6163217156268465275) { return 2 }
+    if !Check("Hello, world!", 0, 21, cast(u64)11807375108901000923) { return 3 }
+    if !Check("Hello, world!", 2, 25, cast(u64)8538125748161836757) { return 4 }
+    if !Check(link, 0, 41, cast(u64)12308827589430926206) { return 5 }
+    if !Check(link, 1, 49, cast(u64)9546014034062774295) { return 6 }
+    if !Check(link, 2, 53, cast(u64)10731787582724937906) { return 7 }
+    if !Check(link, 3, 61, cast(u64)9678624821426569265) { return 8 }
+    if !Check("Grüße aus Paraguay — 水を飲む", 1, 29, cast(u64)2107097246678382182) { return 9 }
+    if !Check("Grüße aus Paraguay — 水を飲む", 3, 37, cast(u64)15298824173063519613) { return 10 }
+    long: [2000]u8
+    for index: 0..cast(s32)1999 {
+        long[index] = cast(u8)(97 + (index * 7) % 26)
+    }
+    text := TextView(long[:])
+    if !Check(text, 0, 149, cast(u64)17672563641657374912) { return 11 }
+    if !Check(text, 1, 169, cast(u64)12221189950613935549) { return 12 }
+    // Too long for version 40 at the higher levels.
+    if QrEncodeText(text, cast(QrEcc)QrEccQuartile, *qr) || qr.size != 0 { return 13 }
+    if QrModule(*qr, 0, 0) { return 14 }
+    return 0
+}
