@@ -7,4 +7,4 @@ git = "https://github.com/ziranlang/ziran.git"
 ref = "master"
 
 [exports]
-QrCode = "src/qrcode.zi"
+qrcode = "src/qrcode.zi"
