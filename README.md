@@ -18,7 +18,7 @@ ziran add https://github.com/ziranlang/qrcode.git
 ```
 
 ```zi
-#import "qrcode/QrCode"
+#import "qrcode/qrcode"
 
 using QrEcc;
 
