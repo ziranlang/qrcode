@@ -8,7 +8,7 @@
     "name": "qrcode"
   },
   "toolchain": {
-    "commit": "7a4e1df9ca90e5b9e081df37802a09d36ba26334",
+    "commit": "55cc0ed26e94ea473d17215bb9eadae3c11a4e8d",
     "ref": "master",
     "url": "https://github.com/ziranlang/ziran.git"
   }
