@@ -3,8 +3,8 @@ name = "qrcode"
 module_roots = ["src", "tests"]
 
 [toolchain]
-git = "https://github.com/ziranlang/ziran.git"
-ref = "master"
+git = "https://git.waozi.xyz/ziranlang/ziran.git"
+ref = "55cc0ed26e94ea473d17215bb9eadae3c11a4e8d"
 
 [exports]
 qrcode = "src/qrcode.zi"

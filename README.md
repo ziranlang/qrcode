@@ -1,6 +1,6 @@
 # QR Code
 
-QR Code is a small [Ziran](https://github.com/ziranlang/ziran) package that
+QR Code is a small [Ziran](https://git.waozi.xyz/ziranlang/ziran) package that
 encodes text as a QR Code: one byte-mode segment, versions 1 to 40, the four
 error correction levels and an automatically chosen mask. It chooses the
 smallest version that holds the text and raises the error correction level
@@ -14,7 +14,7 @@ It is a port of Project Nayuki's
 ## Use it
 
 ```sh
-ziran add https://github.com/ziranlang/qrcode.git
+ziran add https://git.waozi.xyz/ziranlang/qrcode.git
 ```
 
 ```zi
