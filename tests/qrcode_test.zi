@@ -1,4 +1,4 @@
-#import "qrcode"
+#import "qrcode/qrcode"
 
 using QrEcc;
 

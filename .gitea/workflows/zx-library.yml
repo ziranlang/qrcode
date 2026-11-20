@@ -1,0 +1,39 @@
+name: ZX library
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  library:
+    runs-on: build-native-ziran
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Run source and source-free tests
+        run: make check check-binary-production ZX_REVISION="$GITHUB_SHA"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: qrcode-zx-library-${{ github.sha }}
+          path: build/zx-library/default.zx
+          if-no-files-found: error
+      - name: Publish the verified library to Gitea Packages
+        if: github.server_url == 'https://git.waozi.xyz' && github.ref == 'refs/heads/master'
+        env:
+          PACKAGE_USER: ${{ secrets.ZIRAN_TOOLCHAIN_PACKAGE_USER }}
+          PACKAGE_TOKEN: ${{ secrets.ZIRAN_TOOLCHAIN_PACKAGE_TOKEN }}
+        run: |
+          if [ -z "$PACKAGE_USER" ] || [ -z "$PACKAGE_TOKEN" ]; then
+            echo "Gitea package writer is unavailable. The library is in this run's artifacts."
+            exit 0
+          fi
+          umask 077
+          ZIRAN_PACKAGE_NETRC=$(mktemp "$RUNNER_TEMP/ziran-netrc.XXXXXX")
+          export ZIRAN_PACKAGE_NETRC
+          trap 'rm -f "$ZIRAN_PACKAGE_NETRC"' EXIT
+          printf 'machine git.waozi.xyz login %s password %s\n' "$PACKAGE_USER" "$PACKAGE_TOKEN" > "$ZIRAN_PACKAGE_NETRC"
+          make publish-zx ZX_REVISION="$GITHUB_SHA"
