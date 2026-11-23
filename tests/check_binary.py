@@ -165,6 +165,8 @@ def main():
             (root / "ziran.toml").write_text(manifest)
             discover_library(root, ziran, env, library, "\t".join(descriptor) + "\n", repository, revision, profile)
             dependency["checked"] = {"profile": profile, "sha256": descriptor[-1], "toolchain": tool_identity}
+            # `ziran add --ref` keeps the requested revision as the root's dependency ref.
+            lock["root"]["dependency_refs"] = {package: revision}
             saved = lock_path.read_bytes()
             if json.loads(saved) != lock:
                 raise SystemExit("Package discovery recorded an unexpected library pin")
